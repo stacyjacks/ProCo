@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -22,11 +21,11 @@ import kurmakaeva.anastasia.ui.theme.Typography
 import kurmakaeva.anastasia.ui.viewmodel.AddSavedItemViewModel
 
 @Composable
-fun AddSavedItemScreen(viewModel: AddSavedItemViewModel = hiltViewModel()) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
+fun AddSavedItemScreen(
+    onTapAdd: () -> Unit,
+    viewModel: AddSavedItemViewModel = hiltViewModel()
+) {
+    Column(modifier = Modifier.fillMaxSize()) {
         TopBarTitle(screen = "New preset")
         AddSavedItem(
             amount = viewModel.savedItem.grams.toString(),
@@ -35,7 +34,10 @@ fun AddSavedItemScreen(viewModel: AddSavedItemViewModel = hiltViewModel()) {
             onNameChanged = { viewModel.onNameChanged(it) }
         )
         Button(
-            onClick = { viewModel.addSavedItem() },
+            onClick = {
+                viewModel.addSavedItem()
+                onTapAdd()
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(24.dp)
@@ -88,6 +90,13 @@ fun AddSavedItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(32.dp),
+            placeholder = {
+                Text(
+                    text = "Name",
+                    modifier = Modifier.fillMaxWidth(),
+                    style = Typography.bodyLarge
+                )
+            },
             textStyle = Typography.bodyLarge
         )
     }
