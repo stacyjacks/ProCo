@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import kurmakaeva.anastasia.domain.SavedRepository
+import kurmakaeva.anastasia.domain.irepository.SavedRepository
 import kurmakaeva.anastasia.domain.entities.SavedEntity
 import javax.inject.Inject
 

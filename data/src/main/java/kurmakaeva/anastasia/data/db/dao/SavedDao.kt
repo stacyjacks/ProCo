@@ -1,9 +1,10 @@
-package kurmakaeva.anastasia.data.db
+package kurmakaeva.anastasia.data.db.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kurmakaeva.anastasia.data.db.model.Saved
 import java.util.*
 
 @Dao

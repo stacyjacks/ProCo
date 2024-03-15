@@ -1,8 +1,8 @@
 package kurmakaeva.anastasia.data.repository
 
 import dagger.hilt.android.scopes.ViewModelScoped
-import kurmakaeva.anastasia.data.db.SavedDao
-import kurmakaeva.anastasia.domain.SavedRepository
+import kurmakaeva.anastasia.data.db.dao.SavedDao
+import kurmakaeva.anastasia.domain.irepository.SavedRepository
 import kurmakaeva.anastasia.domain.entities.SavedEntity
 import javax.inject.Inject
 

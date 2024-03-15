@@ -1,4 +1,4 @@
-package kurmakaeva.anastasia.data.db
+package kurmakaeva.anastasia.data.db.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

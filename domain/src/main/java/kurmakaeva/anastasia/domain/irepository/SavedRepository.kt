@@ -1,4 +1,4 @@
-package kurmakaeva.anastasia.domain
+package kurmakaeva.anastasia.domain.irepository
 
 import kurmakaeva.anastasia.domain.entities.SavedEntity
 

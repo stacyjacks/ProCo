@@ -18,6 +18,14 @@ object DatabaseModule {
 
     @Provides
     @Singleton
+    fun provideInputDao(appDb: AppDatabase) = appDb.inputDao()
+
+    @Provides
+    @Singleton
+    fun provideGoalDao(appDb: AppDatabase) = appDb.goalDao()
+
+    @Provides
+    @Singleton
     fun provideAppDb(@ApplicationContext context: Context): AppDatabase {
         return Room
             .databaseBuilder(
