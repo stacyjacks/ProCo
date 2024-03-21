@@ -1,5 +1,6 @@
 package kurmakaeva.anastasia.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -16,12 +17,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ProgressBar(goal: Float, current: Float, goalText: String) {
-    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+fun ProgressBar(
+    goal: Float,
+    current: Float,
+    goalText: String,
+    onClick: () -> Unit
+) {
+    BoxWithConstraints(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        contentAlignment = Alignment.Center
+    ) {
         Column(
             modifier = Modifier.padding(vertical = 64.dp, horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -32,17 +45,18 @@ fun ProgressBar(goal: Float, current: Float, goalText: String) {
                 )
                 Box {
                     LinearProgressIndicator(
+                        progress = { current.div(goal) },
                         modifier = Modifier
-                            .width(this@BoxWithConstraints.maxWidth - 80.dp)
-                            .padding(horizontal = 8.dp)
+                            .width(this@BoxWithConstraints.maxWidth - 90.dp)
+                            .padding(horizontal = 8.dp, vertical = 2.dp)
                             .height(20.dp),
-                        progress = current.div(goal),
-                        color = Color.Gray,
-                        trackColor = Color.LightGray
+                        color = MaterialTheme.colorScheme.primary,
+                        trackColor = Color.LightGray,
+                        strokeCap = StrokeCap.Round,
                     )
 
                     Text(
-                        text = if (current != goal) current.toInt().toString() else "",
+                        text = if (current < goal) current.toInt().toString() else "",
                         modifier = Modifier
                             .width((this@BoxWithConstraints.maxWidth - 90.dp) * (current.div(goal))),
                         textAlign = TextAlign.End,
@@ -58,4 +72,15 @@ fun ProgressBar(goal: Float, current: Float, goalText: String) {
             )
         }
     }
+}
+
+@Preview
+@Composable
+private fun ProgressBarPreview() {
+    ProgressBar(
+        goal = 100f,
+        current = 90f,
+        goalText = "Nice! Keep going",
+        onClick = { /* preview only */ }
+    )
 }

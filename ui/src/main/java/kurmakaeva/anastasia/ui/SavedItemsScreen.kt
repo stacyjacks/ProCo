@@ -1,6 +1,8 @@
 package kurmakaeva.anastasia.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -57,7 +59,10 @@ fun SavedList(list: List<SavedEntity>, viewModel: SavedItemsViewModel) {
                     .background(MaterialTheme.colorScheme.background)
                     .padding(24.dp)
                 ) {
-                    Row(Modifier.fillMaxWidth()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
                         Column {
                             Text(
                                 text = it.name,
@@ -71,7 +76,9 @@ fun SavedList(list: List<SavedEntity>, viewModel: SavedItemsViewModel) {
                         Icon(
                             imageVector = Icons.Default.Add,
                             contentDescription = "Add",
-                            modifier = Modifier.fillMaxWidth().padding(4.dp)
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .clickable { viewModel.addSavedItemToInput(index) }
                         )
                     }
                 }

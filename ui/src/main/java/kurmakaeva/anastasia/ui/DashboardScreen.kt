@@ -2,10 +2,8 @@ package kurmakaeva.anastasia.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +21,7 @@ import kurmakaeva.anastasia.ui.viewmodel.DashboardViewModel
 fun DashboardScreen(
     onNavigateToSaved: () -> Unit,
     onNavigateToAdd: () -> Unit,
+    onClickProgress: () -> Unit,
     viewModel: DashboardViewModel = hiltViewModel()
 ) {
     Scaffold(
@@ -31,21 +30,31 @@ fun DashboardScreen(
         },
         bottomBar = {
             BottomTabBar(
-                onNavigateToLinkOne = { onNavigateToSaved() },
-                onNavigateToLinkTwo = { onNavigateToAdd() }
+                onTapButtonOne = { onNavigateToSaved() },
+                onTapButtonTwo = { onNavigateToAdd() },
+                onTapButtonThree = {
+                    viewModel.resetDailyData()
+                }
             )
         },
         content = {
             Column(modifier = Modifier.padding(it)) {
-                if (viewModel.goal != 0.0f) {
-                    ProgressBar(
-                        goal = viewModel.goal,
-                        current = viewModel.current,
-                        goalText = goalText(viewModel.current.div(100))
-                    )
+                ProgressBar(
+                    goal = viewModel.goal,
+                    current =
+                    if (viewModel.current > viewModel.goal) viewModel.goal
+                    else viewModel.current,
+                    goalText = goalText(viewModel.current.div(100)),
+                    onClick = { onClickProgress() }
+                )
+                LazyVerticalGrid(columns = GridCells.Fixed(4)) {
+                    items(viewModel.input.size) { index ->
+                        Text(
+                            text = viewModel.input[index].input.toString(),
+                            modifier = Modifier.padding(horizontal = 32.dp, vertical = 8.dp)
+                        )
+                    }
                 }
-
-                ListOfItems()
             }
         }
     )
@@ -53,24 +62,11 @@ fun DashboardScreen(
 
 private fun goalText(current: Float): String {
     return when {
+        current == 0.0f -> ""
         current < 0.5f -> "You're off to a good start!"
         current >= 0.5f && current < 0.75f -> "Nice! Keep going."
         current >= 0.75f && current < 1.0f -> "Almost there!"
         else -> "Well done! Come back tomorrow."
-    }
-}
-
-@Composable
-fun ListOfItems() {
-    Column(modifier = Modifier
-        .padding(horizontal = 32.dp)
-        .height(IntrinsicSize.Max)
-        .verticalScroll(rememberScrollState())
-    ) {
-        Text(text = "24 grams")
-        Text(text = "24 grams")
-        Text(text = "24 grams")
-        Text(text = "24 grams")
     }
 }
 
@@ -80,8 +76,7 @@ fun DashboardPreview() {
     ProCoTheme {
         Column {
             TopBarTitle(screen = "Today's goal")
-            ProgressBar(goal = 80.0f, current = 60.0f, goalText(60.0f.div(100)))
-            ListOfItems()
+            ProgressBar(goal = 80.0f, current = 80.0f, goalText(80.0f.div(100)), {})
         }
     }
 }

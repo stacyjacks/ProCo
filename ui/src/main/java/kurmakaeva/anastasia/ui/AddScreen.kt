@@ -18,24 +18,36 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kurmakaeva.anastasia.ui.components.TopBarTitle
 import kurmakaeva.anastasia.ui.theme.Typography
-import kurmakaeva.anastasia.ui.viewmodel.AddSavedItemViewModel
+import kurmakaeva.anastasia.ui.viewmodel.AddViewModel
 
 @Composable
-fun AddSavedItemScreen(
+fun AddScreen(
+    type: AddScreenType,
     onTapAdd: () -> Unit,
-    viewModel: AddSavedItemViewModel = hiltViewModel()
+    viewModel: AddViewModel = hiltViewModel()
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
-        TopBarTitle(screen = "New preset")
-        AddSavedItem(
+        TopBarTitle(screen = if (type == AddScreenType.Goal) "Add goal" else "New preset")
+        AddGramsContainer(
             amount = viewModel.savedItem.grams.toString(),
-            onAmountChanged = { viewModel.onAmountChanged(it.toFloat()) },
-            name = viewModel.savedItem.name,
-            onNameChanged = { viewModel.onNameChanged(it) }
+            onAmountChanged = { viewModel.onAmountChanged(it.toFloat()) }
         )
+
+        if (type == AddScreenType.Saved) {
+            AddNameContainer(
+                name = viewModel.savedItem.name,
+                onNameChanged = { viewModel.onNameChanged(it) }
+            )
+        }
+
         Button(
             onClick = {
-                viewModel.addSavedItem()
+                if (type == AddScreenType.Saved) {
+                    viewModel.addSavedItem()
+                } else {
+                    viewModel.addGoal()
+                }
+
                 onTapAdd()
             },
             modifier = Modifier
@@ -48,11 +60,9 @@ fun AddSavedItemScreen(
 }
 
 @Composable
-fun AddSavedItem(
+fun AddGramsContainer(
     amount: String,
-    onAmountChanged: (String) -> Unit,
-    name: String,
-    onNameChanged: (String) -> Unit
+    onAmountChanged: (String) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -83,32 +93,37 @@ fun AddSavedItem(
             modifier = Modifier.padding(16.dp),
             style = Typography.bodyLarge
         )
-
-        TextField(
-            value = name,
-            onValueChange = { onNameChanged(it) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(32.dp),
-            placeholder = {
-                Text(
-                    text = "Name",
-                    modifier = Modifier.fillMaxWidth(),
-                    style = Typography.bodyLarge
-                )
-            },
-            textStyle = Typography.bodyLarge
-        )
     }
 }
+
+@Composable
+fun AddNameContainer(
+    name: String,
+    onNameChanged: (String) -> Unit
+) {
+    TextField(
+        value = name,
+        onValueChange = { onNameChanged(it) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(32.dp),
+        placeholder = {
+            Text(
+                text = "Name",
+                modifier = Modifier.fillMaxWidth(),
+                style = Typography.bodyLarge
+            )
+        },
+        textStyle = Typography.bodyLarge
+    )
+}
+
 
 @Preview
 @Composable
 fun AddSavedItemPreview() {
-    AddSavedItem(
+    AddGramsContainer(
         amount = "",
         onAmountChanged = { /* preview only */ },
-        name = "Protein shake",
-        onNameChanged = { /* preview only */ }
     )
 }
