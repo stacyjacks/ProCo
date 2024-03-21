@@ -1,6 +1,7 @@
 package kurmakaeva.anastasia.data.db.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -16,4 +17,7 @@ interface InputDao {
 
     @Query("DELETE FROM input_table where id = :inputId")
     suspend fun deleteInputById(vararg inputId: Long)
+
+    @Delete
+    suspend fun resetAllInput(inputList: List<Input>)
 }

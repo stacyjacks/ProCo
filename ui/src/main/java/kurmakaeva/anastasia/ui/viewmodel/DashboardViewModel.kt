@@ -60,6 +60,9 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun resetDailyData() {
-
+        viewModelScope.launch {
+            inputRepository.resetAllInput(input)
+            goalRepository.resetCurrent(GoalDataEntity(current, goal))
+        }
     }
 }

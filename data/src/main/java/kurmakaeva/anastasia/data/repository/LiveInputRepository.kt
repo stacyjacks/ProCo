@@ -20,4 +20,8 @@ class LiveInputRepository @Inject constructor(
         TODO("Not yet implemented")
     }
 
+    override suspend fun resetAllInput(inputList: List<InputEntity>) {
+        inputDao.resetAllInput(inputList.map { it.toDao() })
+    }
+
 }

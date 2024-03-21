@@ -6,4 +6,5 @@ interface InputRepository {
     suspend fun getAllInput(): List<InputEntity>
     suspend fun addInput(input: InputEntity)
     suspend fun deleteInput(inputId: Long)
+    suspend fun resetAllInput(inputList: List<InputEntity>)
 }
