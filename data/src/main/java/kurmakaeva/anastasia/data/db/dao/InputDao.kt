@@ -5,12 +5,13 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 import kurmakaeva.anastasia.data.db.model.Input
 
 @Dao
 interface InputDao {
     @Query("SELECT * FROM input_table ORDER BY time ASC")
-    suspend fun getAllInput(): List<Input>
+    fun getAllInput(): Flow<List<Input>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addInput(input: Input)

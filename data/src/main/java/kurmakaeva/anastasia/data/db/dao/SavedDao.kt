@@ -4,13 +4,14 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 import kurmakaeva.anastasia.data.db.model.Saved
 import java.util.*
 
 @Dao
 interface SavedDao {
     @Query("SELECT * FROM saved_table ORDER BY name ASC")
-    suspend fun getAllSaved(): List<Saved>
+    fun getAllSaved(): Flow<List<Saved>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addSaved(saved: Saved)

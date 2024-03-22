@@ -5,12 +5,13 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 import kurmakaeva.anastasia.data.db.model.GoalData
 
 @Dao
 interface GoalDao {
     @Query("SELECT * FROM goal_table")
-    suspend fun getGoalData(): GoalData
+    fun getGoalData(): Flow<GoalData>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addGoalData(goalData: GoalData)

@@ -34,10 +34,10 @@ class DashboardViewModel @Inject constructor(
     private fun getGoalData() {
         viewModelScope.launch {
             kotlin.runCatching {
-                goalRepository.getGoalData()
-            }.onSuccess {
-                goal = it.goal
-                current = it.current
+                goalRepository.getGoalData().collect {
+                    goal = it.goal
+                    current = it.current
+                }
             }.onFailure {
                 Log.i("RoomDb failed", it.message.orEmpty())
             }
@@ -47,11 +47,11 @@ class DashboardViewModel @Inject constructor(
     private fun getCurrentInput() {
         viewModelScope.launch {
             kotlin.runCatching {
-                inputRepository.getAllInput()
-            }.onSuccess {
-                input = it
-                it.forEach { input ->
-                    current = current.plus(input.input)
+                inputRepository.getAllInput().collect {
+                    input = it
+                    it.forEach { input ->
+                        current = current.plus(input.input)
+                    }
                 }
             }.onFailure {
                 Log.i("RoomDb failed", it.message.orEmpty())
