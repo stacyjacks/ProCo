@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,38 +15,55 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kurmakaeva.anastasia.domain.entities.SavedEntity
+import kurmakaeva.anastasia.ui.components.BottomTabBar
 import kurmakaeva.anastasia.ui.components.ItemWithSwipeToDelete
 import kurmakaeva.anastasia.ui.components.TopBarTitle
 import kurmakaeva.anastasia.ui.theme.Typography
 import kurmakaeva.anastasia.ui.viewmodel.SavedItemsViewModel
 
 @Composable
-fun SavedItemsScreen(viewModel: SavedItemsViewModel = hiltViewModel()) {
+fun SavedItemsScreen(
+    onNavigateToAdd: () -> Unit,
+    viewModel: SavedItemsViewModel = hiltViewModel()
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        TopBarTitle(screen = "Saved presets")
-        SavedList(
-            list = viewModel.savedItems,
-            viewModel = viewModel
+        Scaffold(
+            topBar = { TopBarTitle(screen = ScreenType.Saved) },
+            bottomBar = {
+                BottomTabBar(
+                    items = listOf("Add saved"),
+                    icons = listOf(Icons.Default.Add),
+                    actions = listOf { onNavigateToAdd() }
+                )
+            },
+            content = {
+                SavedList(
+                    list = viewModel.savedItems,
+                    viewModel = viewModel,
+                    paddingValues = it
+                )
+            }
         )
     }
 }
 
 @Composable
-fun SavedList(list: List<SavedEntity>, viewModel: SavedItemsViewModel) {
+fun SavedList(list: List<SavedEntity>, viewModel: SavedItemsViewModel, paddingValues: PaddingValues) {
     LazyColumn(
         state = rememberLazyListState(),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp)
+            .padding(paddingValues)
     ) {
         items(list.size) { index ->
             ItemWithSwipeToDelete(

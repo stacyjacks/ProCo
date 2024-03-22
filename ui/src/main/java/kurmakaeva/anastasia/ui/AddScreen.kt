@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -13,6 +14,9 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -22,18 +26,36 @@ import kurmakaeva.anastasia.ui.viewmodel.AddViewModel
 
 @Composable
 fun AddScreen(
-    type: AddScreenType,
+    type: ScreenType,
     onTapAdd: () -> Unit,
     viewModel: AddViewModel = hiltViewModel()
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
-        TopBarTitle(screen = if (type == AddScreenType.Goal) "Add goal" else "New preset")
+        TopBarTitle(screen = type)
+
         AddGramsContainer(
-            amount = viewModel.savedItem.grams.toString(),
-            onAmountChanged = { viewModel.onAmountChanged(it.toFloat()) }
+            amount = getAmount(type, viewModel),
+            onAmountChanged = {
+                when (type) {
+                    ScreenType.AddGoal -> viewModel.onGoalAmountChanged(it.toFloat())
+                    ScreenType.AddInput -> viewModel.onInputAmountChanged(it.toFloat())
+                    ScreenType.AddSaved -> viewModel.onSavedAmountChanged(it.toFloat())
+
+                    else -> { /* do nothing */ }
+                }
+            }
         )
 
-        if (type == AddScreenType.Saved) {
+        if (type == ScreenType.AddGoal) {
+            Text(
+                text = "per day",
+                modifier = Modifier.padding(vertical = 8.dp).fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                style = Typography.bodyLarge
+            )
+        }
+
+        if (type == ScreenType.AddSaved) {
             AddNameContainer(
                 name = viewModel.savedItem.name,
                 onNameChanged = { viewModel.onNameChanged(it) }
@@ -42,10 +64,17 @@ fun AddScreen(
 
         Button(
             onClick = {
-                if (type == AddScreenType.Saved) {
-                    viewModel.addSavedItem()
-                } else {
-                    viewModel.addGoal()
+                when (type) {
+                    ScreenType.AddSaved -> {
+                        viewModel.addSavedItem()
+                    }
+                    ScreenType.AddInput -> {
+                        viewModel.addInput()
+                    }
+                    ScreenType.AddGoal -> {
+                        viewModel.addGoal()
+                    }
+                    else -> { /* do nothing */ }
                 }
 
                 onTapAdd()
@@ -70,7 +99,11 @@ fun AddGramsContainer(
     ) {
         OutlinedTextField(
             value = if (amount != "0.0") amount else "",
-            onValueChange = { onAmountChanged(it) },
+            onValueChange = {
+                if (it.isEmpty() || it.toDoubleOrNull() != null) {
+                    onAmountChanged(it)
+                }
+            },
             modifier = Modifier
                 .padding(top = 32.dp, bottom = 16.dp)
                 .width(100.dp)
@@ -85,7 +118,10 @@ fun AddGramsContainer(
                 )
             },
             singleLine = true,
-            textStyle = Typography.titleLarge
+            textStyle = Typography.titleLarge,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Number
+            )
         )
 
         Text(
@@ -114,8 +150,20 @@ fun AddNameContainer(
                 style = Typography.bodyLarge
             )
         },
-        textStyle = Typography.bodyLarge
+        textStyle = Typography.bodyLarge,
+        keyboardOptions = KeyboardOptions.Default.copy(
+            capitalization = KeyboardCapitalization.Sentences
+        )
     )
+}
+
+private fun getAmount(type: ScreenType, viewModel: AddViewModel): String {
+    return when (type) {
+        ScreenType.AddGoal -> viewModel.goal.goal.toString()
+        ScreenType.AddInput -> viewModel.input.input.toString()
+        ScreenType.AddSaved -> viewModel.savedItem.grams.toString()
+        else -> { "" }
+    }
 }
 
 

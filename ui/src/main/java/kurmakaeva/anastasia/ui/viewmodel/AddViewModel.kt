@@ -6,21 +6,28 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kurmakaeva.anastasia.domain.entities.GoalDataEntity
+import kurmakaeva.anastasia.domain.entities.InputEntity
 import kurmakaeva.anastasia.domain.irepository.SavedRepository
 import kurmakaeva.anastasia.domain.entities.SavedEntity
 import kurmakaeva.anastasia.domain.irepository.GoalRepository
+import kurmakaeva.anastasia.domain.irepository.InputRepository
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class AddViewModel @Inject constructor(
     private val savedRepository: SavedRepository,
-    private val goalRepository: GoalRepository
+    private val goalRepository: GoalRepository,
+    private val inputRepository: InputRepository
 ): ViewModel() {
 
     var savedItem by mutableStateOf(SavedEntity(0L, "", 0.0f))
         private set
 
-    private var goal by mutableStateOf(GoalDataEntity(0.0f, 0.0f))
+    var input by mutableStateOf(InputEntity(0L, 0.0f, ""))
+        private set
+
+    var goal by mutableStateOf(GoalDataEntity(0.0f, 0.0f))
 
     fun addSavedItem() {
         viewModelScope.launch {
@@ -34,9 +41,25 @@ class AddViewModel @Inject constructor(
         }
     }
 
-    fun onAmountChanged(amount: Float) {
+    fun addInput() {
+        viewModelScope.launch {
+            inputRepository.addInput(input)
+        }
+    }
+
+    fun onGoalAmountChanged(amount: Float) {
         goal = goal.copy(goal = amount)
+    }
+
+    fun onSavedAmountChanged(amount: Float) {
         savedItem = savedItem.copy(grams = amount)
+    }
+
+    fun onInputAmountChanged(amount: Float) {
+        input = input.copy(
+            input = amount,
+            time = Calendar.getInstance().time.toString()
+        )
     }
 
     fun onNameChanged(name: String) {

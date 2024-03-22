@@ -7,12 +7,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import kurmakaeva.anastasia.ui.ScreenType
 import kurmakaeva.anastasia.ui.theme.Typography
 
 @Composable
-fun TopBarTitle(screen: String) {
+fun TopBarTitle(screen: ScreenType) {
     Text(
-        text = screen,
+        text = screen.title,
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 16.dp),

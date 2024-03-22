@@ -4,6 +4,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,15 +30,21 @@ fun DashboardScreen(
 ) {
     Scaffold(
         topBar = {
-            TopBarTitle(screen = "Today's goal")
+            TopBarTitle(screen = ScreenType.Dashboard)
         },
         bottomBar = {
             BottomTabBar(
-                onTapButtonOne = { onNavigateToSaved() },
-                onTapButtonTwo = { onNavigateToAdd() },
-                onTapButtonThree = {
-                    viewModel.resetDailyData()
-                }
+                items = listOf("Saved", "Add input", "Delete daily data"),
+                icons = listOf(
+                    Icons.AutoMirrored.Default.List,
+                    Icons.Default.Add,
+                    Icons.Default.Delete
+                ),
+                actions = listOf(
+                    { onNavigateToSaved() },
+                    { onNavigateToAdd() },
+                    { viewModel.resetDailyData() }
+                )
             )
         },
         content = {
@@ -44,7 +54,7 @@ fun DashboardScreen(
                     current =
                     if (viewModel.current > viewModel.goal) viewModel.goal
                     else viewModel.current,
-                    goalText = goalText(viewModel.current.div(100)),
+                    goalText = goalText(viewModel.current.div(viewModel.goal)),
                     onClick = { onClickProgress() }
                 )
                 LazyVerticalGrid(columns = GridCells.Fixed(4)) {
@@ -54,6 +64,13 @@ fun DashboardScreen(
                             modifier = Modifier.padding(horizontal = 32.dp, vertical = 8.dp)
                         )
                     }
+                }
+
+                if (viewModel.input.isEmpty()) {
+                    Text(
+                        text = "No data. Go grab a bite.",
+                        modifier = Modifier.padding(horizontal = 32.dp, vertical = 8.dp)
+                    )
                 }
             }
         }
@@ -75,8 +92,13 @@ private fun goalText(current: Float): String {
 fun DashboardPreview() {
     ProCoTheme {
         Column {
-            TopBarTitle(screen = "Today's goal")
-            ProgressBar(goal = 80.0f, current = 80.0f, goalText(80.0f.div(100)), {})
+            TopBarTitle(screen = ScreenType.Dashboard)
+            ProgressBar(
+                goal = 80.0f,
+                current = 80.0f,
+                goalText = goalText(80.0f.div(100)),
+                onClick = { /* preview only */ }
+            )
         }
     }
 }

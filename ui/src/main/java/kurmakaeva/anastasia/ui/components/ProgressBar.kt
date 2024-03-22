@@ -57,8 +57,9 @@ fun ProgressBar(
 
                     Text(
                         text = if (current < goal) current.toInt().toString() else "",
-                        modifier = Modifier
-                            .width((this@BoxWithConstraints.maxWidth - 90.dp) * (current.div(goal))),
+                        modifier = Modifier.width(
+                            (this@BoxWithConstraints.maxWidth - 90.dp) * (current.div(goal))
+                        ),
                         textAlign = TextAlign.End,
                         color = MaterialTheme.colorScheme.background
                     )

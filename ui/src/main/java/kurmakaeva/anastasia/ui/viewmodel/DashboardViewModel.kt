@@ -36,7 +36,6 @@ class DashboardViewModel @Inject constructor(
             kotlin.runCatching {
                 goalRepository.getGoalData().collect {
                     goal = it.goal
-                    current = it.current
                 }
             }.onFailure {
                 Log.i("RoomDb failed", it.message.orEmpty())
@@ -48,10 +47,11 @@ class DashboardViewModel @Inject constructor(
         viewModelScope.launch {
             kotlin.runCatching {
                 inputRepository.getAllInput().collect {
+                    println(it.count())
                     input = it
-                    it.forEach { input ->
-                        current = current.plus(input.input)
-                    }
+                    current =
+                        if (input.isEmpty()) 0f
+                        else it.map(InputEntity::input).reduce(Float::plus)
                 }
             }.onFailure {
                 Log.i("RoomDb failed", it.message.orEmpty())
@@ -62,7 +62,7 @@ class DashboardViewModel @Inject constructor(
     fun resetDailyData() {
         viewModelScope.launch {
             inputRepository.resetAllInput(input)
-            goalRepository.resetCurrent(GoalDataEntity(current, goal))
+            goalRepository.updateCurrent(GoalDataEntity(0.0f, goal))
         }
     }
 }

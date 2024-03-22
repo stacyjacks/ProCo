@@ -14,6 +14,7 @@ import kurmakaeva.anastasia.domain.entities.SavedEntity
 import kurmakaeva.anastasia.domain.irepository.InputRepository
 import java.util.Calendar
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class SavedItemsViewModel @Inject constructor(
@@ -54,7 +55,7 @@ class SavedItemsViewModel @Inject constructor(
         viewModelScope.launch {
             inputRepository.addInput(
                 InputEntity(
-                    id = savedItems[index].id,
+                    id = Random.nextLong(),
                     input = savedItems[index].grams,
                     time = Calendar.getInstance().time.toString()
                 )
