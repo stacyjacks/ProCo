@@ -14,6 +14,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -48,8 +49,10 @@ fun AddScreen(
 
         if (type == ScreenType.AddGoal) {
             Text(
-                text = "per day",
-                modifier = Modifier.padding(vertical = 8.dp).fillMaxWidth(),
+                text = stringResource(id = R.string.perDay),
+                modifier = Modifier
+                    .padding(vertical = 8.dp)
+                    .fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 style = Typography.bodyLarge
             )
@@ -83,7 +86,7 @@ fun AddScreen(
                 .fillMaxWidth()
                 .padding(24.dp)
         ) {
-            Text(text = "Save")
+            Text(text = stringResource(id = R.string.save))
         }
     }
 }
@@ -125,7 +128,7 @@ fun AddGramsContainer(
         )
 
         Text(
-            text = "grams",
+            text = stringResource(id = R.string.grams),
             modifier = Modifier.padding(16.dp),
             style = Typography.bodyLarge
         )
@@ -145,7 +148,7 @@ fun AddNameContainer(
             .padding(32.dp),
         placeholder = {
             Text(
-                text = "Name",
+                text = stringResource(id = R.string.savedName),
                 modifier = Modifier.fillMaxWidth(),
                 style = Typography.bodyLarge
             )

@@ -12,6 +12,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -34,7 +35,11 @@ fun DashboardScreen(
         },
         bottomBar = {
             BottomTabBar(
-                items = listOf("Saved", "Add input", "Delete daily data"),
+                items = listOf(
+                    stringResource(id = R.string.savedTitle),
+                    stringResource(id = R.string.addInputTitle),
+                    stringResource(id = R.string.deleteContentDesc)
+                ),
                 icons = listOf(
                     Icons.AutoMirrored.Default.List,
                     Icons.Default.Add,
@@ -54,7 +59,9 @@ fun DashboardScreen(
                     current =
                     if (viewModel.current > viewModel.goal) viewModel.goal
                     else viewModel.current,
-                    goalText = goalText(viewModel.current.div(viewModel.goal)),
+                    goalText = stringResource(
+                        id = goalString(viewModel.current.div(viewModel.goal))
+                    ),
                     onClick = { onClickProgress() }
                 )
                 LazyVerticalGrid(columns = GridCells.Fixed(4)) {
@@ -68,7 +75,7 @@ fun DashboardScreen(
 
                 if (viewModel.input.isEmpty()) {
                     Text(
-                        text = "No data. Go grab a bite.",
+                        text = stringResource(id = R.string.dashboardEmptyState),
                         modifier = Modifier.padding(horizontal = 32.dp, vertical = 8.dp)
                     )
                 }
@@ -77,13 +84,13 @@ fun DashboardScreen(
     )
 }
 
-private fun goalText(current: Float): String {
+private fun goalString(current: Float): Int {
     return when {
-        current == 0.0f -> ""
-        current < 0.5f -> "You're off to a good start!"
-        current >= 0.5f && current < 0.75f -> "Nice! Keep going."
-        current >= 0.75f && current < 1.0f -> "Almost there!"
-        else -> "Well done! Come back tomorrow."
+        current == 0.0f -> R.string.empty
+        current < 0.5f -> R.string.progressCheerFirst
+        current >= 0.5f && current < 0.75f -> R.string.progressCheerSecond
+        current >= 0.75f && current < 1.0f -> R.string.progressCheerThird
+        else -> R.string.progressCheerFinish
     }
 }
 
@@ -96,7 +103,7 @@ fun DashboardPreview() {
             ProgressBar(
                 goal = 80.0f,
                 current = 80.0f,
-                goalText = goalText(80.0f.div(100)),
+                goalText = stringResource(id = goalString(80.0f.div(100))),
                 onClick = { /* preview only */ }
             )
         }

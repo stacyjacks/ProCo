@@ -19,6 +19,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kurmakaeva.anastasia.domain.entities.SavedEntity
@@ -41,7 +42,7 @@ fun SavedItemsScreen(
             topBar = { TopBarTitle(screen = ScreenType.Saved) },
             bottomBar = {
                 BottomTabBar(
-                    items = listOf("Add saved"),
+                    items = listOf(stringResource(id = R.string.addPresetTitle)),
                     icons = listOf(Icons.Default.Add),
                     actions = listOf { onNavigateToAdd() }
                 )
@@ -87,13 +88,13 @@ fun SavedList(list: List<SavedEntity>, viewModel: SavedItemsViewModel, paddingVa
                                 style = Typography.bodySmall
                             )
                             Text(
-                                text = it.grams.toString() + " grams",
+                                text = it.grams.toString() + " " + stringResource(id = R.string.grams),
                                 style = Typography.bodyLarge
                             )
                         }
                         Icon(
                             imageVector = Icons.Default.Add,
-                            contentDescription = "Add",
+                            contentDescription = stringResource(id = R.string.add),
                             modifier = Modifier
                                 .padding(4.dp)
                                 .clickable { viewModel.addSavedItemToInput(index) }

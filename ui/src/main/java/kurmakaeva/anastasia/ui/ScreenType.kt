@@ -1,9 +1,9 @@
 package kurmakaeva.anastasia.ui
 
-enum class ScreenType(val title: String) {
-    Dashboard(title = "Today's goal"),
-    Saved(title = "Saved presets"),
-    AddGoal(title = "Add goal"),
-    AddSaved(title = "New preset"),
-    AddInput(title = "New input")
+enum class ScreenType(val title: Int) {
+    Dashboard(title = R.string.dashboardTitle),
+    Saved(title = R.string.savedTitle),
+    AddGoal(title = R.string.addGoalTitle),
+    AddSaved(title = R.string.addPresetTitle),
+    AddInput(title = R.string.addInputTitle)
 }
