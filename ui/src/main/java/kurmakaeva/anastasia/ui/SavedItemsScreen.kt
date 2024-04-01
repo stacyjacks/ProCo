@@ -53,6 +53,15 @@ fun SavedItemsScreen(
                     viewModel = viewModel,
                     paddingValues = it
                 )
+
+                if (viewModel.savedItems.isEmpty()) {
+                    Text(
+                        text = stringResource(id = R.string.savedEmptyState),
+                        modifier = Modifier
+                            .padding(it)
+                            .padding(horizontal = 32.dp, vertical = 64.dp)
+                    )
+                }
             }
         )
     }
@@ -66,11 +75,11 @@ fun SavedList(list: List<SavedEntity>, viewModel: SavedItemsViewModel, paddingVa
             .fillMaxWidth()
             .padding(paddingValues)
     ) {
-        items(list.size) { index ->
+        items(list.size, key = { list[it].id }) { index ->
             ItemWithSwipeToDelete(
                 item = list[index],
                 onDelete = {
-                    viewModel.deleteSavedItem(index)
+                    viewModel.deleteSavedItem(list[index].id)
                 }
             ) {
                 Column(modifier = Modifier
@@ -88,7 +97,7 @@ fun SavedList(list: List<SavedEntity>, viewModel: SavedItemsViewModel, paddingVa
                                 style = Typography.bodySmall
                             )
                             Text(
-                                text = it.grams.toString() + " " + stringResource(id = R.string.grams),
+                                text = it.grams.toString() + stringResource(id = R.string.grams),
                                 style = Typography.bodyLarge
                             )
                         }

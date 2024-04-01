@@ -41,10 +41,10 @@ class SavedItemsViewModel @Inject constructor(
         }
     }
 
-    fun deleteSavedItem(index: Int) {
+    fun deleteSavedItem(id: Long) {
         viewModelScope.launch {
             try {
-                savedRepository.deleteSaved(savedItems[index].id)
+                savedRepository.deleteSaved(id)
             } catch (e: Exception) {
                 e.localizedMessage
             }

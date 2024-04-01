@@ -65,4 +65,10 @@ class DashboardViewModel @Inject constructor(
             goalRepository.updateCurrent(GoalDataEntity(0.0f, goal))
         }
     }
+
+    fun deleteSingleEntry(id: Long) {
+        viewModelScope.launch {
+            inputRepository.deleteInput(id)
+        }
+    }
 }

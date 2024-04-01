@@ -1,5 +1,9 @@
 package kurmakaeva.anastasia.ui
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -22,6 +26,7 @@ import kurmakaeva.anastasia.ui.components.TopBarTitle
 import kurmakaeva.anastasia.ui.theme.ProCoTheme
 import kurmakaeva.anastasia.ui.viewmodel.DashboardViewModel
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DashboardScreen(
     onNavigateToSaved: () -> Unit,
@@ -68,7 +73,14 @@ fun DashboardScreen(
                     items(viewModel.input.size) { index ->
                         Text(
                             text = viewModel.input[index].input.toString(),
-                            modifier = Modifier.padding(horizontal = 32.dp, vertical = 8.dp)
+                            modifier = Modifier
+                                .padding(horizontal = 32.dp, vertical = 8.dp)
+                                .combinedClickable(
+                                    onLongClick = {
+                                        viewModel.deleteSingleEntry(viewModel.input[index].id)
+                                    },
+                                    onClick = {}
+                                )
                         )
                     }
                 }
@@ -86,7 +98,7 @@ fun DashboardScreen(
 
 private fun goalString(current: Float): Int {
     return when {
-        current == 0.0f -> R.string.empty
+        current == 0.0f || current.isNaN() -> R.string.empty
         current < 0.5f -> R.string.progressCheerFirst
         current >= 0.5f && current < 0.75f -> R.string.progressCheerSecond
         current >= 0.75f && current < 1.0f -> R.string.progressCheerThird

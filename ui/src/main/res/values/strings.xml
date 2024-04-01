@@ -6,13 +6,14 @@
     <string name="addPresetTitle">New preset</string>
     <string name="addInputTitle">New input</string>
     <string name="dashboardEmptyState">No data. Go grab a bite.</string>
+    <string name="savedEmptyState">No data. Start by adding one of your staples.</string>
     <string name="progressCheerFirst">You\'re off to a good start!</string>
     <string name="progressCheerSecond">Nice! Keep going.</string>
     <string name="progressCheerThird">Almost there!</string>
     <string name="progressCheerFinish">Well done! Come back tomorrow.</string>
     <string name="deleteContentDesc">Delete daily data</string>
     <string name="savedName">Name</string>
-    <string name="grams">grams</string>
+    <string name="grams">\u0020grams</string>
     <string name="perDay">per day</string>
     <string name="save">Save</string>
     <string name="add">Add</string>

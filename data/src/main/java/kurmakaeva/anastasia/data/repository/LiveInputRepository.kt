@@ -23,7 +23,7 @@ class LiveInputRepository @Inject constructor(
     }
 
     override suspend fun deleteInput(inputId: Long) {
-        TODO("Not yet implemented")
+        inputDao.deleteInputById(inputId)
     }
 
     override suspend fun resetAllInput(inputList: List<InputEntity>) {

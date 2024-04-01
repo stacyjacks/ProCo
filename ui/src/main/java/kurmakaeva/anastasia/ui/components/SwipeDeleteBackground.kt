@@ -26,7 +26,7 @@ fun SwipeDeleteBackground(swipeDismissState: SwipeToDismissBoxState) {
     Box(modifier = Modifier
         .fillMaxSize()
         .background(color)
-        .padding(16.dp),
+        .padding(vertical = 16.dp, horizontal = 28.dp),
         contentAlignment = Alignment.CenterEnd
     ) {
         Icon(
