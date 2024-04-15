@@ -18,4 +18,9 @@
     <string name="save">Save</string>
     <string name="add">Add</string>
     <string name="empty"> </string>
+    <string name="deleteEntryDialogTitle">Delete</string>
+    <string name="deleteConfirmation">Are you sure you want to delete this entry?</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
+    <string name="warningContentDesc">Warning</string>
 </resources>

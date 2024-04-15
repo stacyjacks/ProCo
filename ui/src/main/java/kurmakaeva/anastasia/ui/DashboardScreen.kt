@@ -1,8 +1,6 @@
 package kurmakaeva.anastasia.ui
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -11,21 +9,24 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import kurmakaeva.anastasia.ui.components.AlertDialog
 import kurmakaeva.anastasia.ui.components.BottomTabBar
 import kurmakaeva.anastasia.ui.components.ProgressBar
 import kurmakaeva.anastasia.ui.components.TopBarTitle
 import kurmakaeva.anastasia.ui.theme.ProCoTheme
 import kurmakaeva.anastasia.ui.viewmodel.DashboardViewModel
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DashboardScreen(
     onNavigateToSaved: () -> Unit,
@@ -57,6 +58,20 @@ fun DashboardScreen(
             )
         },
         content = {
+            val openDialog = rememberSaveable { mutableStateOf(false) }
+            val selectedItem = rememberSaveable { mutableStateOf(0) }
+
+            DeleteEntryDialog(
+                onConfirm = {
+                    viewModel.deleteSingleEntry(viewModel.input[selectedItem.value].id)
+                    openDialog.value = false
+                },
+                onDismiss = {
+                    openDialog.value = false
+                },
+                openDialog = openDialog.value
+            )
+
             Column(modifier = Modifier.padding(it)) {
                 ProgressBar(
                     goal = viewModel.goal,
@@ -77,12 +92,10 @@ fun DashboardScreen(
                             text = viewModel.input[index].input.toString(),
                             modifier = Modifier
                                 .padding(horizontal = 32.dp, vertical = 8.dp)
-                                .combinedClickable(
-                                    onLongClick = {
-                                        viewModel.deleteSingleEntry(viewModel.input[index].id)
-                                    },
-                                    onClick = {}
-                                )
+                                .clickable {
+                                    openDialog.value = true
+                                    selectedItem.value = index
+                                }
                         )
                     }
                 }
@@ -95,6 +108,18 @@ fun DashboardScreen(
                 }
             }
         }
+    )
+}
+
+@Composable
+fun DeleteEntryDialog(openDialog: Boolean, onConfirm: () -> Unit, onDismiss: () -> Unit) {
+    AlertDialog(
+        icon = Icons.Default.Warning,
+        title = stringResource(id = R.string.deleteEntryDialogTitle),
+        text = stringResource(id = R.string.deleteConfirmation),
+        show = openDialog,
+        onConfirm = { onConfirm() },
+        onDismiss = { onDismiss() }
     )
 }
 
