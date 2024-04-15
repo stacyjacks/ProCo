@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kurmakaeva.anastasia.ui.theme.PurpleGrey80
 
 @Composable
 fun ProgressBar(
@@ -55,7 +56,7 @@ fun ProgressBar(
                             .padding(horizontal = 8.dp, vertical = 2.dp)
                             .height(20.dp),
                         color = MaterialTheme.colorScheme.primary,
-                        trackColor = Color.LightGray,
+                        trackColor = PurpleGrey80,
                         strokeCap = StrokeCap.Round,
                     )
 
@@ -79,7 +80,7 @@ fun ProgressBar(
     }
 }
 
-@Preview
+@Preview(backgroundColor = 0xFFFFFF, showBackground = true)
 @Composable
 private fun ProgressBarPreview() {
     ProgressBar(

@@ -2,15 +2,14 @@ package kurmakaeva.anastasia.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -26,12 +25,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kurmakaeva.anastasia.ui.components.TopBarTitle
 import kurmakaeva.anastasia.ui.theme.Typography
+import kurmakaeva.anastasia.ui.theme.themeGradient
 import kurmakaeva.anastasia.ui.viewmodel.AddViewModel
 
 @Composable
 fun AddScreen(
     type: ScreenType,
     onTapAdd: () -> Unit,
+    onTapCancel: () -> Unit,
     viewModel: AddViewModel = hiltViewModel()
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
@@ -67,9 +68,10 @@ fun AddScreen(
                 onNameChanged = { viewModel.onNameChanged(it) }
             )
         }
-
-        Button(
-            onClick = {
+        AddScreenButtons(
+            onTapAdd = { onTapAdd() },
+            onTapCancel = { onTapCancel() },
+            saveAction = {
                 when (type) {
                     ScreenType.AddSaved -> {
                         viewModel.addSavedItem()
@@ -82,15 +84,8 @@ fun AddScreen(
                     }
                     else -> { /* do nothing */ }
                 }
-
-                onTapAdd()
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp)
-        ) {
-            Text(text = stringResource(id = R.string.save))
-        }
+            }
+        )
     }
 }
 
@@ -103,7 +98,7 @@ fun AddGramsContainer(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        OutlinedTextField(
+        TextField(
             value = if (amount != "0.0") amount else "",
             onValueChange = {
                 if (it.isEmpty() || it.toDoubleOrNull() != null) {
@@ -112,8 +107,6 @@ fun AddGramsContainer(
             },
             modifier = Modifier
                 .padding(top = 32.dp, bottom = 16.dp)
-                .width(100.dp)
-                .height(100.dp)
                 .background(Color.Transparent),
             placeholder = {
                 Text(
@@ -121,17 +114,19 @@ fun AddGramsContainer(
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally),
-                    style = Typography.titleMedium
+                    style = Typography.headlineLarge
                 )
             },
             singleLine = true,
-            textStyle = Typography.titleLarge,
+            textStyle = Typography.headlineLarge,
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Number
             ),
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
             )
         )
 
@@ -172,6 +167,35 @@ fun AddNameContainer(
     )
 }
 
+@Composable
+fun AddScreenButtons(
+    onTapAdd: () -> Unit,
+    onTapCancel: () -> Unit,
+    saveAction: () -> Unit
+) {
+    Button(
+        onClick = {
+            saveAction()
+            onTapAdd()
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 24.dp, start = 24.dp, end = 24.dp)
+    ) {
+        Text(text = stringResource(id = R.string.save))
+    }
+
+    TextButton(
+        onClick = { onTapCancel() },
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = stringResource(id = R.string.cancel),
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
 private fun getAmount(type: ScreenType, viewModel: AddViewModel): String {
     return when (type) {
         ScreenType.AddGoal -> viewModel.goal.goal.toString()
@@ -185,8 +209,12 @@ private fun getAmount(type: ScreenType, viewModel: AddViewModel): String {
 @Preview
 @Composable
 fun AddSavedItemPreview() {
-    AddGramsContainer(
-        amount = "",
-        onAmountChanged = { /* preview only */ },
-    )
+    Column(modifier = Modifier.background(themeGradient).fillMaxHeight()) {
+        TopBarTitle(screen = ScreenType.AddInput)
+        AddGramsContainer(
+            amount = "",
+            onAmountChanged = { /* preview only */ },
+        )
+        AddScreenButtons(onTapAdd = {}, onTapCancel = {}, saveAction = {})
+    }
 }

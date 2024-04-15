@@ -23,22 +23,23 @@ val Typography = Typography(
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
     ),
-    titleLarge = TextStyle(
+    headlineLarge = TextStyle(
+        color = Color.White,
         fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
+        fontWeight = FontWeight.Bold,
+        fontSize = 60.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp,
         textAlign = TextAlign.Center,
-        color = Color.White
     ),
-    titleMedium = TextStyle(
+    titleLarge = TextStyle(
+        color = Color.White,
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
         fontSize = 22.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp,
-        textAlign = TextAlign.Center,
+        textAlign = TextAlign.Center
     ),
     labelSmall = TextStyle(
         fontFamily = FontFamily.Default,

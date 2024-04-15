@@ -34,9 +34,8 @@ fun ProCoNavHost(navController: NavHostController) {
         composable(route = AddSavedRoute) {
             AddScreen(
                 type = ScreenType.AddSaved,
-                onTapAdd = {
-                    navController.popBackStack()
-                }
+                onTapAdd = { navController.popBackStack() },
+                onTapCancel = { navController.popBackStack() }
             )
         }
         composable(route = AddGoalRoute) {
@@ -48,7 +47,8 @@ fun ProCoNavHost(navController: NavHostController) {
                             inclusive = true
                         }
                     }
-                }
+                },
+                onTapCancel = { navController.popBackStack() }
             )
         }
         composable(route = AddInputRoute) {
@@ -61,7 +61,8 @@ fun ProCoNavHost(navController: NavHostController) {
                             inclusive = true
                         }
                     }
-                }
+                },
+                onTapCancel = { navController.popBackStack() }
             )
         }
     }
