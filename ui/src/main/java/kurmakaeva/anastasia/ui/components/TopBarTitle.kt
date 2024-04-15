@@ -17,7 +17,7 @@ fun TopBarTitle(screen: ScreenType) {
         text = stringResource(id = screen.title),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp),
+            .padding(top = 16.dp, bottom = 32.dp),
         textAlign = TextAlign.Center,
         style = Typography.titleLarge
     )

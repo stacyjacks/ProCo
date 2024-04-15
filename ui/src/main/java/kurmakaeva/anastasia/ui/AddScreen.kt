@@ -1,5 +1,6 @@
 package kurmakaeva.anastasia.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,9 +12,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -110,20 +113,25 @@ fun AddGramsContainer(
             modifier = Modifier
                 .padding(top = 32.dp, bottom = 16.dp)
                 .width(100.dp)
-                .height(100.dp),
+                .height(100.dp)
+                .background(Color.Transparent),
             placeholder = {
                 Text(
                     text = "0",
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally),
-                    style = Typography.titleLarge
+                    style = Typography.titleMedium
                 )
             },
             singleLine = true,
             textStyle = Typography.titleLarge,
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Number
+            ),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White
             )
         )
 
@@ -156,6 +164,10 @@ fun AddNameContainer(
         textStyle = Typography.bodyLarge,
         keyboardOptions = KeyboardOptions.Default.copy(
             capitalization = KeyboardCapitalization.Sentences
+        ),
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
         )
     )
 }

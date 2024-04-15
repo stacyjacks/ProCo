@@ -3,7 +3,6 @@ package kurmakaeva.anastasia.ui
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -69,7 +68,10 @@ fun DashboardScreen(
                     ),
                     onClick = { onClickProgress() }
                 )
-                LazyVerticalGrid(columns = GridCells.Fixed(4)) {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(4),
+                    modifier = Modifier.padding(vertical = 16.dp)
+                ) {
                     items(viewModel.input.size) { index ->
                         Text(
                             text = viewModel.input[index].input.toString(),

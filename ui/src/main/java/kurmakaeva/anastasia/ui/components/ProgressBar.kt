@@ -1,5 +1,6 @@
 package kurmakaeva.anastasia.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -31,7 +33,9 @@ fun ProgressBar(
 ) {
     BoxWithConstraints(
         modifier = Modifier
+            .padding(16.dp)
             .fillMaxWidth()
+            .background(shape = RoundedCornerShape(24.dp), color = Color.White)
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
@@ -61,7 +65,7 @@ fun ProgressBar(
                             (this@BoxWithConstraints.maxWidth - 90.dp) * (current.div(goal))
                         ),
                         textAlign = TextAlign.End,
-                        color = MaterialTheme.colorScheme.background
+                        color = Color.White
                     )
                 }
                 Text(text = goal.toInt().toString())
