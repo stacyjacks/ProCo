@@ -1,7 +1,9 @@
 package kurmakaeva.anastasia.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -25,6 +27,7 @@ import kurmakaeva.anastasia.ui.components.BottomTabBar
 import kurmakaeva.anastasia.ui.components.ProgressBar
 import kurmakaeva.anastasia.ui.components.TopBarTitle
 import kurmakaeva.anastasia.ui.theme.ProCoTheme
+import kurmakaeva.anastasia.ui.theme.themeGradient
 import kurmakaeva.anastasia.ui.viewmodel.DashboardViewModel
 
 @Composable
@@ -137,7 +140,7 @@ private fun goalString(current: Float): Int {
 @Composable
 fun DashboardPreview() {
     ProCoTheme {
-        Column {
+        Column(modifier = Modifier.background(themeGradient).height(1000.dp)) {
             TopBarTitle(screen = ScreenType.Dashboard)
             ProgressBar(
                 goal = 80.0f,

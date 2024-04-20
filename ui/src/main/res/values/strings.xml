@@ -23,4 +23,5 @@
     <string name="yes">Yes</string>
     <string name="cancel">Cancel</string>
     <string name="warningContentDesc">Warning</string>
+    <string name="toastAddedMessage">Item added to your daily input</string>
 </resources>

@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import kurmakaeva.anastasia.ui.components.AddScreenButtons
 import kurmakaeva.anastasia.ui.components.TopBarTitle
 import kurmakaeva.anastasia.ui.theme.Typography
 import kurmakaeva.anastasia.ui.theme.themeGradient
@@ -165,35 +166,6 @@ fun AddNameContainer(
             unfocusedContainerColor = Color.Transparent,
         )
     )
-}
-
-@Composable
-fun AddScreenButtons(
-    onTapAdd: () -> Unit,
-    onTapCancel: () -> Unit,
-    saveAction: () -> Unit
-) {
-    Button(
-        onClick = {
-            saveAction()
-            onTapAdd()
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 24.dp, start = 24.dp, end = 24.dp)
-    ) {
-        Text(text = stringResource(id = R.string.save))
-    }
-
-    TextButton(
-        onClick = { onTapCancel() },
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Text(
-            text = stringResource(id = R.string.cancel),
-            textAlign = TextAlign.Center
-        )
-    }
 }
 
 private fun getAmount(type: ScreenType, viewModel: AddViewModel): String {

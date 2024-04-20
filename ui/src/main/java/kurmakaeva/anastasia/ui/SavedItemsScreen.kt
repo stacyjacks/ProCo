@@ -1,5 +1,6 @@
 package kurmakaeva.anastasia.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -76,6 +78,8 @@ fun SavedList(list: List<SavedEntity>, viewModel: SavedItemsViewModel, paddingVa
             .padding(paddingValues)
     ) {
         items(list.size, key = { list[it].id }) { index ->
+            val context = LocalContext.current
+
             ItemWithSwipeToDelete(
                 item = list[index],
                 onDelete = {
@@ -106,7 +110,16 @@ fun SavedList(list: List<SavedEntity>, viewModel: SavedItemsViewModel, paddingVa
                             modifier = Modifier
                                 .background(Color.Transparent)
                                 .padding(4.dp)
-                                .clickable { viewModel.addSavedItemToInput(index) }
+                                .clickable {
+                                    viewModel.addSavedItemToInput(index)
+                                    Toast
+                                        .makeText(
+                                            context,
+                                            R.string.toastAddedMessage,
+                                            Toast.LENGTH_SHORT
+                                        )
+                                        .show()
+                                }
                         )
                     }
                 }
