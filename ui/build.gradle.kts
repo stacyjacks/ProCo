@@ -3,11 +3,12 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
     namespace = "kurmakaeva.anastasia.ui"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 28

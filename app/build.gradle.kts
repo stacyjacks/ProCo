@@ -3,16 +3,17 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
     namespace = "kurmakaeva.anastasia.proco"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "kurmakaeva.anastasia.proco"
         minSdk = 28
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
