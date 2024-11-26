@@ -24,7 +24,7 @@ val Typography = Typography(
         letterSpacing = 0.5.sp
     ),
     headlineLarge = TextStyle(
-        color = Color.White,
+        color = Purple40,
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Bold,
         fontSize = 60.sp,
@@ -33,7 +33,7 @@ val Typography = Typography(
         textAlign = TextAlign.Center,
     ),
     titleLarge = TextStyle(
-        color = Color.White,
+        color = Purple40,
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
         fontSize = 22.sp,
@@ -48,4 +48,13 @@ val Typography = Typography(
         lineHeight = 16.sp,
         letterSpacing = 0.5.sp
     )
+)
+
+val smallPurpleBold = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.Bold,
+    color = Purple40,
+    fontSize = 15.sp,
+    lineHeight = 24.sp,
+    letterSpacing = 0.5.sp
 )

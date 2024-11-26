@@ -12,8 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -22,12 +26,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kurmakaeva.anastasia.domain.entities.SavedEntity
-import kurmakaeva.anastasia.ui.components.BottomTabBar
 import kurmakaeva.anastasia.ui.components.ItemWithSwipeToDelete
 import kurmakaeva.anastasia.ui.components.TopBarTitle
+import kurmakaeva.anastasia.ui.theme.Purple40
 import kurmakaeva.anastasia.ui.theme.Typography
 import kurmakaeva.anastasia.ui.viewmodel.SavedItemsViewModel
 
@@ -42,25 +47,32 @@ fun SavedItemsScreen(
     ) {
         Scaffold(
             topBar = { TopBarTitle(screen = ScreenType.Saved) },
-            bottomBar = {
-                BottomTabBar(
-                    items = listOf(stringResource(id = R.string.addPresetTitle)),
-                    icons = listOf(Icons.Default.Add),
-                    actions = listOf { onNavigateToAdd() }
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = { onNavigateToAdd() },
+                    shape = CircleShape,
+                    elevation = FloatingActionButtonDefaults.elevation(12.dp),
+                    containerColor = Purple40,
+                    contentColor = Color.White,
+                    content = {
+                        Icon(imageVector = Icons.Default.Add, contentDescription = "")
+                    }
                 )
             },
-            content = {
+            floatingActionButtonPosition = FabPosition.End,
+            content = { paddingValues ->
                 SavedList(
                     list = viewModel.savedItems,
-                    viewModel = viewModel,
-                    paddingValues = it
+                    onDelete = { viewModel.deleteSavedItem(it) },
+                    onAddSavedItemToInput = { viewModel.addSavedItemToInput(it) },
+                    paddingValues = paddingValues
                 )
 
                 if (viewModel.savedItems.isEmpty()) {
                     Text(
                         text = stringResource(id = R.string.savedEmptyState),
                         modifier = Modifier
-                            .padding(it)
+                            .padding(paddingValues)
                             .padding(horizontal = 32.dp, vertical = 64.dp)
                     )
                 }
@@ -70,7 +82,12 @@ fun SavedItemsScreen(
 }
 
 @Composable
-fun SavedList(list: List<SavedEntity>, viewModel: SavedItemsViewModel, paddingValues: PaddingValues) {
+fun SavedList(
+    list: List<SavedEntity>,
+    onDelete: (Long) -> Unit,
+    onAddSavedItemToInput: (Int) -> Unit,
+    paddingValues: PaddingValues
+) {
     LazyColumn(
         state = rememberLazyListState(),
         modifier = Modifier
@@ -83,7 +100,7 @@ fun SavedList(list: List<SavedEntity>, viewModel: SavedItemsViewModel, paddingVa
             ItemWithSwipeToDelete(
                 item = list[index],
                 onDelete = {
-                    viewModel.deleteSavedItem(list[index].id)
+                    onDelete(it.id)
                 }
             ) {
                 Column(modifier = Modifier
@@ -111,7 +128,7 @@ fun SavedList(list: List<SavedEntity>, viewModel: SavedItemsViewModel, paddingVa
                                 .background(Color.Transparent)
                                 .padding(4.dp)
                                 .clickable {
-                                    viewModel.addSavedItemToInput(index)
+                                    onAddSavedItemToInput(index)
                                     Toast
                                         .makeText(
                                             context,
@@ -126,4 +143,26 @@ fun SavedList(list: List<SavedEntity>, viewModel: SavedItemsViewModel, paddingVa
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun PreviewSavedScreen() {
+    SavedList(
+        list = listOf(
+            SavedEntity(
+                id = 0,
+                name = "Protein shake",
+                grams = 30.0f
+            ),
+            SavedEntity(
+                id = 1,
+                name = "Burger",
+                grams = 15.0f
+            )
+        ),
+        onDelete = {},
+        onAddSavedItemToInput = {},
+        paddingValues = PaddingValues()
+    )
 }

@@ -1,6 +1,5 @@
 package kurmakaeva.anastasia.ui.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
@@ -13,12 +12,14 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -28,26 +29,27 @@ fun BottomTabBar(
     icons: List<ImageVector>,
     actions: List<() -> Unit>
 ) {
-    BoxWithConstraints {
-        val itemWidth = this.maxWidth.div(items.size)
-        BottomAppBar(
-            modifier = Modifier
-                .height(48.dp)
-                .background(MaterialTheme.colorScheme.background)
-                .align(Alignment.Center)
-        ) {
-            Row {
-                items.forEachIndexed { index, item ->
-                    Button(
-                        onClick = actions[index],
-                        modifier = Modifier
-                            .padding(horizontal = 1.dp)
-                            .width(itemWidth)
-                            .align(Alignment.CenterVertically),
-                        shape = RoundedCornerShape(4.dp)
-                    ) {
-                        Icon(imageVector = icons[index], contentDescription = item)
-                    }
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    val itemWidth = screenWidth / items.size
+
+    BottomAppBar(
+        modifier = Modifier.height(48.dp),
+        containerColor = MaterialTheme.colorScheme.background,
+        tonalElevation = 32.dp
+    ) {
+        Row(modifier = Modifier.padding(4.dp)) {
+            items.forEachIndexed { index, item ->
+                Button(
+                    onClick = actions[index],
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 2.dp)
+                        .width(itemWidth)
+                        .align(Alignment.CenterVertically),
+                    shape = RoundedCornerShape(18.dp),
+                    elevation = ButtonDefaults.buttonElevation(12.dp)
+                ) {
+                    Icon(imageVector = icons[index], contentDescription = item)
                 }
             }
         }

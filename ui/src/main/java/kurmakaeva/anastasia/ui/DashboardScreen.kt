@@ -2,23 +2,32 @@ package kurmakaeva.anastasia.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,6 +36,7 @@ import kurmakaeva.anastasia.ui.components.BottomTabBar
 import kurmakaeva.anastasia.ui.components.ProgressBar
 import kurmakaeva.anastasia.ui.components.TopBarTitle
 import kurmakaeva.anastasia.ui.theme.ProCoTheme
+import kurmakaeva.anastasia.ui.theme.smallPurpleBold
 import kurmakaeva.anastasia.ui.theme.themeGradient
 import kurmakaeva.anastasia.ui.viewmodel.DashboardViewModel
 
@@ -38,35 +48,26 @@ fun DashboardScreen(
     viewModel: DashboardViewModel = hiltViewModel()
 ) {
     Scaffold(
+        modifier = Modifier
+            .padding(bottom = 8.dp)
+            .background(MaterialTheme.colorScheme.background),
         topBar = {
             TopBarTitle(screen = ScreenType.Dashboard)
         },
         bottomBar = {
-            BottomTabBar(
-                items = listOf(
-                    stringResource(id = R.string.savedTitle),
-                    stringResource(id = R.string.addInputTitle),
-                    stringResource(id = R.string.deleteContentDesc)
-                ),
-                icons = listOf(
-                    Icons.AutoMirrored.Default.List,
-                    Icons.Default.Add,
-                    Icons.Default.Delete
-                ),
-                actions = listOf(
-                    { onNavigateToSaved() },
-                    { onNavigateToAdd() },
-                    { viewModel.resetDailyData() }
-                )
+            DashBottomBar(
+                onNavigateToSaved = onNavigateToSaved,
+                onNavigateToAdd = onNavigateToAdd,
+                resetDailyData = { viewModel.resetDailyData() }
             )
         },
         content = {
             val openDialog = rememberSaveable { mutableStateOf(false) }
-            val selectedItem = rememberSaveable { mutableStateOf(0) }
+            val selectedItem = rememberSaveable { mutableIntStateOf(0) }
 
             DeleteEntryDialog(
                 onConfirm = {
-                    viewModel.deleteSingleEntry(viewModel.input[selectedItem.value].id)
+                    viewModel.deleteSingleEntry(viewModel.input[selectedItem.intValue].id)
                     openDialog.value = false
                 },
                 onDismiss = {
@@ -87,30 +88,65 @@ fun DashboardScreen(
                     onClick = { onClickProgress() }
                 )
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(4),
-                    modifier = Modifier.padding(vertical = 16.dp)
+                    columns = GridCells.FixedSize(80.dp),
+                    contentPadding = PaddingValues(16.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     items(viewModel.input.size) { index ->
-                        Text(
-                            text = viewModel.input[index].input.toString(),
+                        Box(
                             modifier = Modifier
-                                .padding(horizontal = 32.dp, vertical = 8.dp)
                                 .clickable {
                                     openDialog.value = true
-                                    selectedItem.value = index
+                                    selectedItem.intValue = index
                                 }
-                        )
+                                .height(80.dp)
+                                .padding(8.dp)
+                                .background(shape = CircleShape, color = Color.White),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "${viewModel.input[index].input} gr",
+                                textAlign = TextAlign.Center,
+                                style = smallPurpleBold
+                            )
+                        }
                     }
                 }
 
                 if (viewModel.input.isEmpty()) {
                     Text(
                         text = stringResource(id = R.string.dashboardEmptyState),
-                        modifier = Modifier.padding(horizontal = 32.dp, vertical = 8.dp)
+                        modifier = Modifier
+                            .padding(horizontal = 32.dp, vertical = 8.dp)
                     )
                 }
             }
         }
+    )
+}
+
+@Composable
+private fun DashBottomBar(
+    onNavigateToSaved: () -> Unit,
+    onNavigateToAdd: () -> Unit,
+    resetDailyData: () -> Unit
+) {
+    BottomTabBar(
+        items = listOf(
+            stringResource(id = R.string.savedTitle),
+            stringResource(id = R.string.addInputTitle),
+            stringResource(id = R.string.deleteContentDesc)
+        ),
+        icons = listOf(
+            Icons.AutoMirrored.Default.List,
+            Icons.Default.Add,
+            Icons.Default.Delete
+        ),
+        actions = listOf(
+            { onNavigateToSaved() },
+            { onNavigateToAdd() },
+            { resetDailyData() }
+        )
     )
 }
 
@@ -126,28 +162,28 @@ fun DeleteEntryDialog(openDialog: Boolean, onConfirm: () -> Unit, onDismiss: () 
     )
 }
 
-private fun goalString(current: Float): Int {
-    return when {
-        current == 0.0f || current.isNaN() -> R.string.empty
-        current < 0.5f -> R.string.progressCheerFirst
-        current >= 0.5f && current < 0.75f -> R.string.progressCheerSecond
-        current >= 0.75f && current < 1.0f -> R.string.progressCheerThird
-        else -> R.string.progressCheerFinish
-    }
-}
-
 @Preview
 @Composable
 fun DashboardPreview() {
     ProCoTheme {
-        Column(modifier = Modifier.background(themeGradient).height(1000.dp)) {
-            TopBarTitle(screen = ScreenType.Dashboard)
-            ProgressBar(
-                goal = 80.0f,
-                current = 80.0f,
-                goalText = stringResource(id = goalString(80.0f.div(100))),
-                onClick = { /* preview only */ }
-            )
-        }
+        Scaffold(
+            modifier = Modifier.background(themeGradient),
+            topBar = {
+                TopBarTitle(screen = ScreenType.Dashboard)
+            },
+            bottomBar = {
+                DashBottomBar({}, {}, {})
+            },
+            content = {
+                Column(modifier = Modifier.padding(it)) {
+                    ProgressBar(
+                        goal = 100.0f,
+                        current = 80.0f,
+                        goalText = stringResource(id = goalString(80.0f.div(100))),
+                        onClick = { /* preview only */ }
+                    )
+                }
+            }
+        )
     }
 }

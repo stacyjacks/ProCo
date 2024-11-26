@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.style.TextAlign
@@ -35,13 +36,14 @@ fun ProgressBar(
     BoxWithConstraints(
         modifier = Modifier
             .padding(16.dp)
+            .shadow(elevation = 8.dp, shape = RoundedCornerShape(24.dp))
             .fillMaxWidth()
             .background(shape = RoundedCornerShape(24.dp), color = Color.White)
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
         Column(
-            modifier = Modifier.padding(vertical = 64.dp, horizontal = 24.dp),
+            modifier = Modifier.padding(vertical = 50.dp, horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(horizontalArrangement = Arrangement.Center) {
@@ -55,9 +57,10 @@ fun ProgressBar(
                             .width(this@BoxWithConstraints.maxWidth - 90.dp)
                             .padding(horizontal = 8.dp, vertical = 2.dp)
                             .height(20.dp),
-                        color = MaterialTheme.colorScheme.primary,
+                        gapSize = (-20).dp,
                         trackColor = PurpleGrey80,
                         strokeCap = StrokeCap.Round,
+                        drawStopIndicator = {}
                     )
 
                     Text(
@@ -85,7 +88,7 @@ fun ProgressBar(
 private fun ProgressBarPreview() {
     ProgressBar(
         goal = 100f,
-        current = 90f,
+        current = 80f,
         goalText = "Nice! Keep going",
         onClick = { /* preview only */ }
     )

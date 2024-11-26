@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -25,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kurmakaeva.anastasia.ui.components.AddScreenButtons
 import kurmakaeva.anastasia.ui.components.TopBarTitle
+import kurmakaeva.anastasia.ui.theme.Purple40
 import kurmakaeva.anastasia.ui.theme.Typography
 import kurmakaeva.anastasia.ui.theme.themeGradient
 import kurmakaeva.anastasia.ui.viewmodel.AddViewModel
@@ -115,6 +114,7 @@ fun AddGramsContainer(
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally),
+                    color = Purple40.copy(alpha = 0.6f),
                     style = Typography.headlineLarge
                 )
             },
