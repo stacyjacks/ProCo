@@ -32,6 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import kurmakaeva.anastasia.domain.entities.SavedEntity
 import kurmakaeva.anastasia.ui.components.ItemWithSwipeToDelete
 import kurmakaeva.anastasia.ui.components.TopBarTitle
+import kurmakaeva.anastasia.ui.theme.ProCoTheme
 import kurmakaeva.anastasia.ui.theme.Purple40
 import kurmakaeva.anastasia.ui.theme.Typography
 import kurmakaeva.anastasia.ui.viewmodel.SavedItemsViewModel
@@ -41,10 +42,22 @@ fun SavedItemsScreen(
     onNavigateToAdd: () -> Unit,
     viewModel: SavedItemsViewModel = hiltViewModel()
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
+    SavedItemsView(
+        onNavigateToAdd = onNavigateToAdd,
+        onDeleteSavedItem = { viewModel.deleteSavedItem(it) },
+        onAddSavedItemToInput = { viewModel.addSavedItemToInput(it) },
+        list = viewModel.savedItems
+    )
+}
+
+@Composable
+private fun SavedItemsView(
+    onNavigateToAdd: () -> Unit,
+    onDeleteSavedItem: (Long) -> Unit,
+    onAddSavedItemToInput: (Int) -> Unit,
+    list: List<SavedEntity>
+) {
+    Column(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             topBar = { TopBarTitle(screen = ScreenType.Saved) },
             floatingActionButton = {
@@ -62,13 +75,13 @@ fun SavedItemsScreen(
             floatingActionButtonPosition = FabPosition.End,
             content = { paddingValues ->
                 SavedList(
-                    list = viewModel.savedItems,
-                    onDelete = { viewModel.deleteSavedItem(it) },
-                    onAddSavedItemToInput = { viewModel.addSavedItemToInput(it) },
+                    list = list,
+                    onDelete = { onDeleteSavedItem(it) },
+                    onAddSavedItemToInput = { onAddSavedItemToInput(it) },
                     paddingValues = paddingValues
                 )
 
-                if (viewModel.savedItems.isEmpty()) {
+                if (list.isEmpty()) {
                     Text(
                         text = stringResource(id = R.string.savedEmptyState),
                         modifier = Modifier
@@ -82,7 +95,7 @@ fun SavedItemsScreen(
 }
 
 @Composable
-fun SavedList(
+private fun SavedList(
     list: List<SavedEntity>,
     onDelete: (Long) -> Unit,
     onAddSavedItemToInput: (Int) -> Unit,
@@ -148,21 +161,18 @@ fun SavedList(
 @Preview
 @Composable
 private fun PreviewSavedScreen() {
-    SavedList(
-        list = listOf(
-            SavedEntity(
-                id = 0,
-                name = "Protein shake",
-                grams = 30.0f
-            ),
-            SavedEntity(
-                id = 1,
-                name = "Burger",
-                grams = 15.0f
+    ProCoTheme {
+        SavedItemsView(
+            onNavigateToAdd = {},
+            onDeleteSavedItem = {},
+            onAddSavedItemToInput = {},
+            list = listOf(
+                SavedEntity(
+                    id = 0,
+                    name = "Protein shake",
+                    grams = 30f
+                )
             )
-        ),
-        onDelete = {},
-        onAddSavedItemToInput = {},
-        paddingValues = PaddingValues()
-    )
+        )
+    }
 }

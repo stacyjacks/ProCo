@@ -9,3 +9,17 @@ fun goalString(current: Float): Int {
         else -> R.string.progressCheerFinish
     }
 }
+
+fun getAmount(
+    type: ScreenType,
+    goal: String,
+    input: String,
+    saved: String
+): String {
+    return when (type) {
+        ScreenType.AddGoal -> goal
+        ScreenType.AddInput -> input
+        ScreenType.AddSaved -> saved
+        else -> { "" }
+    }
+}

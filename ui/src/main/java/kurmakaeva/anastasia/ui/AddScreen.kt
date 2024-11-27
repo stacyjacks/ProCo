@@ -2,7 +2,6 @@ package kurmakaeva.anastasia.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,9 +22,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kurmakaeva.anastasia.ui.components.AddScreenButtons
 import kurmakaeva.anastasia.ui.components.TopBarTitle
+import kurmakaeva.anastasia.ui.theme.ProCoTheme
 import kurmakaeva.anastasia.ui.theme.Purple40
 import kurmakaeva.anastasia.ui.theme.Typography
-import kurmakaeva.anastasia.ui.theme.themeGradient
 import kurmakaeva.anastasia.ui.viewmodel.AddViewModel
 
 @Composable
@@ -35,19 +34,67 @@ fun AddScreen(
     onTapCancel: () -> Unit,
     viewModel: AddViewModel = hiltViewModel()
 ) {
+    AddScreenView(
+        type = type,
+        onTapAdd = onTapAdd,
+        onTapCancel = onTapCancel,
+        onAmountChanged = {
+            when (type) {
+                ScreenType.AddGoal -> viewModel.onGoalAmountChanged(it.toFloat())
+                ScreenType.AddInput -> viewModel.onInputAmountChanged(it.toFloat())
+                ScreenType.AddSaved -> viewModel.onSavedAmountChanged(it.toFloat())
+
+                else -> { /* do nothing */ }
+            }
+        },
+        goal = viewModel.goal.goal.toString(),
+        input = viewModel.input.input.toString(),
+        saved = viewModel.savedItem.grams.toString(),
+        savedName = viewModel.savedItem.name,
+        onSavedNameChanged = { viewModel.onNameChanged(it) },
+        onTapSave = {
+            when (type) {
+                ScreenType.AddSaved -> {
+                    viewModel.addSavedItem()
+                }
+                ScreenType.AddInput -> {
+                    viewModel.addInput()
+                }
+                ScreenType.AddGoal -> {
+                    viewModel.addGoal()
+                }
+                else -> { /* do nothing */ }
+            }
+        }
+
+    )
+}
+
+@Composable
+private fun AddScreenView(
+    type: ScreenType,
+    onTapAdd: () -> Unit,
+    onTapCancel: () -> Unit,
+    onAmountChanged: (String) -> Unit,
+    goal: String? = null,
+    input: String? = null,
+    saved: String? = null,
+    savedName: String? = null,
+    onSavedNameChanged: ((String) -> Unit)? = null,
+    onTapSave: () -> Unit
+) {
     Column(modifier = Modifier.fillMaxSize()) {
         TopBarTitle(screen = type)
 
         AddGramsContainer(
-            amount = getAmount(type, viewModel),
+            amount = getAmount(
+                type = type,
+                goal = goal.orEmpty(),
+                input = input.orEmpty(),
+                saved = saved.orEmpty()
+                ),
             onAmountChanged = {
-                when (type) {
-                    ScreenType.AddGoal -> viewModel.onGoalAmountChanged(it.toFloat())
-                    ScreenType.AddInput -> viewModel.onInputAmountChanged(it.toFloat())
-                    ScreenType.AddSaved -> viewModel.onSavedAmountChanged(it.toFloat())
-
-                    else -> { /* do nothing */ }
-                }
+                onAmountChanged(it)
             }
         )
 
@@ -62,28 +109,17 @@ fun AddScreen(
             )
         }
 
-        if (type == ScreenType.AddSaved) {
+        if (type == ScreenType.AddSaved && onSavedNameChanged != null) {
             AddNameContainer(
-                name = viewModel.savedItem.name,
-                onNameChanged = { viewModel.onNameChanged(it) }
+                name = savedName.orEmpty(),
+                onNameChanged = { onSavedNameChanged(it) }
             )
         }
         AddScreenButtons(
             onTapAdd = { onTapAdd() },
             onTapCancel = { onTapCancel() },
             saveAction = {
-                when (type) {
-                    ScreenType.AddSaved -> {
-                        viewModel.addSavedItem()
-                    }
-                    ScreenType.AddInput -> {
-                        viewModel.addInput()
-                    }
-                    ScreenType.AddGoal -> {
-                        viewModel.addGoal()
-                    }
-                    else -> { /* do nothing */ }
-                }
+                onTapSave()
             }
         )
     }
@@ -140,7 +176,7 @@ fun AddGramsContainer(
 }
 
 @Composable
-fun AddNameContainer(
+private fun AddNameContainer(
     name: String,
     onNameChanged: (String) -> Unit
 ) {
@@ -168,25 +204,17 @@ fun AddNameContainer(
     )
 }
 
-private fun getAmount(type: ScreenType, viewModel: AddViewModel): String {
-    return when (type) {
-        ScreenType.AddGoal -> viewModel.goal.goal.toString()
-        ScreenType.AddInput -> viewModel.input.input.toString()
-        ScreenType.AddSaved -> viewModel.savedItem.grams.toString()
-        else -> { "" }
-    }
-}
-
-
 @Preview
 @Composable
-fun AddSavedItemPreview() {
-    Column(modifier = Modifier.background(themeGradient).fillMaxHeight()) {
-        TopBarTitle(screen = ScreenType.AddInput)
-        AddGramsContainer(
-            amount = "",
-            onAmountChanged = { /* preview only */ },
+private fun AddSavedItemPreview() {
+    ProCoTheme {
+        AddScreenView(
+            type = ScreenType.AddSaved,
+            onTapAdd = {},
+            onTapCancel = {},
+            onAmountChanged = {},
+            onSavedNameChanged = {},
+            onTapSave = {}
         )
-        AddScreenButtons(onTapAdd = {}, onTapCancel = {}, saveAction = {})
     }
 }

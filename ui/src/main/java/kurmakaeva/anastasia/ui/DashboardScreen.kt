@@ -16,7 +16,6 @@ import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,13 +30,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import kurmakaeva.anastasia.domain.entities.InputEntity
 import kurmakaeva.anastasia.ui.components.AlertDialog
 import kurmakaeva.anastasia.ui.components.BottomTabBar
 import kurmakaeva.anastasia.ui.components.ProgressBar
 import kurmakaeva.anastasia.ui.components.TopBarTitle
 import kurmakaeva.anastasia.ui.theme.ProCoTheme
 import kurmakaeva.anastasia.ui.theme.smallPurpleBold
-import kurmakaeva.anastasia.ui.theme.themeGradient
 import kurmakaeva.anastasia.ui.viewmodel.DashboardViewModel
 
 @Composable
@@ -47,10 +46,31 @@ fun DashboardScreen(
     onClickProgress: () -> Unit,
     viewModel: DashboardViewModel = hiltViewModel()
 ) {
+    DashboardView(
+        onNavigateToSaved = onNavigateToSaved,
+        onNavigateToAdd = onNavigateToAdd,
+        onClickProgress = onClickProgress,
+        onResetDailyData = { viewModel.resetDailyData() },
+        onDeleteEntry = { viewModel.deleteSingleEntry(viewModel.input[it].id) },
+        goal = viewModel.goal,
+        current = viewModel.current,
+        input = viewModel.input
+    )
+}
+
+@Composable
+private fun DashboardView(
+    onNavigateToSaved: () -> Unit,
+    onNavigateToAdd: () -> Unit,
+    onClickProgress: () -> Unit,
+    onResetDailyData: () -> Unit,
+    onDeleteEntry: (Int) -> Unit,
+    goal: Float,
+    current: Float,
+    input: List<InputEntity>
+) {
     Scaffold(
-        modifier = Modifier
-            .padding(bottom = 8.dp)
-            .background(MaterialTheme.colorScheme.background),
+        modifier = Modifier.padding(bottom = 8.dp),
         topBar = {
             TopBarTitle(screen = ScreenType.Dashboard)
         },
@@ -58,16 +78,16 @@ fun DashboardScreen(
             DashBottomBar(
                 onNavigateToSaved = onNavigateToSaved,
                 onNavigateToAdd = onNavigateToAdd,
-                resetDailyData = { viewModel.resetDailyData() }
+                resetDailyData = onResetDailyData
             )
         },
-        content = {
+        content = { paddingValues ->
             val openDialog = rememberSaveable { mutableStateOf(false) }
             val selectedItem = rememberSaveable { mutableIntStateOf(0) }
 
             DeleteEntryDialog(
                 onConfirm = {
-                    viewModel.deleteSingleEntry(viewModel.input[selectedItem.intValue].id)
+                    onDeleteEntry(selectedItem.intValue)
                     openDialog.value = false
                 },
                 onDismiss = {
@@ -76,14 +96,14 @@ fun DashboardScreen(
                 openDialog = openDialog.value
             )
 
-            Column(modifier = Modifier.padding(it)) {
+            Column(modifier = Modifier.padding(paddingValues)) {
                 ProgressBar(
-                    goal = viewModel.goal,
+                    goal = goal,
                     current =
-                    if (viewModel.current > viewModel.goal) viewModel.goal
-                    else viewModel.current,
+                    if (current > goal) goal
+                    else current,
                     goalText = stringResource(
-                        id = goalString(viewModel.current.div(viewModel.goal))
+                        id = goalString(current.div(goal))
                     ),
                     onClick = { onClickProgress() }
                 )
@@ -92,7 +112,7 @@ fun DashboardScreen(
                     contentPadding = PaddingValues(16.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    items(viewModel.input.size) { index ->
+                    items(input.size) { index ->
                         Box(
                             modifier = Modifier
                                 .clickable {
@@ -105,7 +125,7 @@ fun DashboardScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "${viewModel.input[index].input} gr",
+                                text = "${input[index].input} gr",
                                 textAlign = TextAlign.Center,
                                 style = smallPurpleBold
                             )
@@ -113,7 +133,7 @@ fun DashboardScreen(
                     }
                 }
 
-                if (viewModel.input.isEmpty()) {
+                if (input.isEmpty()) {
                     Text(
                         text = stringResource(id = R.string.dashboardEmptyState),
                         modifier = Modifier
@@ -151,7 +171,11 @@ private fun DashBottomBar(
 }
 
 @Composable
-fun DeleteEntryDialog(openDialog: Boolean, onConfirm: () -> Unit, onDismiss: () -> Unit) {
+private fun DeleteEntryDialog(
+    openDialog: Boolean,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
     AlertDialog(
         icon = Icons.Default.Warning,
         title = stringResource(id = R.string.deleteEntryDialogTitle),
@@ -164,26 +188,17 @@ fun DeleteEntryDialog(openDialog: Boolean, onConfirm: () -> Unit, onDismiss: () 
 
 @Preview
 @Composable
-fun DashboardPreview() {
+private fun DashboardPreview() {
     ProCoTheme {
-        Scaffold(
-            modifier = Modifier.background(themeGradient),
-            topBar = {
-                TopBarTitle(screen = ScreenType.Dashboard)
-            },
-            bottomBar = {
-                DashBottomBar({}, {}, {})
-            },
-            content = {
-                Column(modifier = Modifier.padding(it)) {
-                    ProgressBar(
-                        goal = 100.0f,
-                        current = 80.0f,
-                        goalText = stringResource(id = goalString(80.0f.div(100))),
-                        onClick = { /* preview only */ }
-                    )
-                }
-            }
+        DashboardView(
+            onNavigateToSaved = {},
+            onNavigateToAdd = {},
+            onClickProgress = {},
+            onResetDailyData = {},
+            onDeleteEntry = {},
+            goal = 100f,
+            current = 50f,
+            input = listOf()
         )
     }
 }
